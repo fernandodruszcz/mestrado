@@ -2,7 +2,7 @@ import psycopg2 as ps
 from .config import config
 
 
-def inicializa(n_cur):
+def inicializa (n_cur):
   conn = ps.connect(**config())
 
   cur_list = []
