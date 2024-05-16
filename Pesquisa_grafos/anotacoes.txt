@@ -1,0 +1,3 @@
+Provavelmente o a v1 é mais rápida nesse experimento porque estamos removendo todos os vértices.
+Então enfileirar todos os vértices acaba sendo mais custoso que iterar por eles várias vezes.
+Porém deve ficar mais rápido quando pegarmos grafos que não terão todos os vértices removidos.
