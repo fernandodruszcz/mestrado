@@ -8,10 +8,15 @@ import math
 #
 #==============================================================================
 #
-def experimenta (G):
-  print('Antes')
-  print (G)
-  print (f'Grau max {max (G.degree, key=lambda x: x[1])[1]}')
+def experimenta (v1, file):
+  ver_alg = '2'
+  if v1:
+    ver_alg = '1'
+
+  G = read_adjlist (file)
+
+  qtde_nos_ant = G.number_of_nodes()
+  grau_max_ant = max (G.degree, key=lambda x: x[1])[1]
 
   #
   # Calculo do r feito no clustering.py
@@ -23,62 +28,48 @@ def experimenta (G):
   c = 0.5
   delta = 0.1
 
-  D = max (G.degree, key=lambda x: x[1])[1]
-  r = math.ceil(
+  r_ant = math.ceil(
     (c/(erro*erro*p))
     *
     (
-    (math.floor(math.log2(D - 1)) + 1)*math.log(1/p) + math.log(1/delta)
+    (math.floor(math.log2(grau_max_ant - 1)) + 1)*math.log(1/p) + math.log(1/delta)
     )
   )
 
-  ini = time()
-  degreeOneRemoval (G, v1=True)
-  fin = time()
+  for i in range (5):
+    G = read_adjlist (file)
+    ini = time()
+    degreeOneRemoval (G, v1=v1)
+    fin = time()
+    dif = fin - ini
 
-  dif = fin - ini
+    qtde_nos_dps = G.number_of_nodes()
+    grau_max_dps = max (G.degree, key=lambda x: x[1])[1]
+    r_dps = math.ceil(
+        (c/(erro*erro*p))
+        *
+        (
+        (math.floor(math.log2(grau_max_dps - 1)) + 1)*math.log(1/p) + math.log(1/delta)
+        )
+      )
 
-  print (f'Tempo de execucao: {dif*1000:6.3f}') # tempo em milissegundos
-
-  ini = time()
-  degreeOneRemoval (G, v1=False)
-  fin = time()
-
-  dif2 = fin - ini
-
-  print (f'Tempo de execucao: {dif2*1000:6.3f}') # tempo em milissegundos
-
-  print (f'Diferenca de tempo da V1 para V2: {1000*dif - 1000*dif2}')
-
-  print('Depois')
-  print(G)
-  print (f'Grau max {max (G.degree, key=lambda x: x[1])[1]}')
-
-  D = max (G.degree, key=lambda x: x[1])[1]
-  r2 = math.ceil(
-    (c/(erro*erro*p))
-    *
-    (
-    (math.floor(math.log2(D - 1)) + 1)*math.log(1/p) + math.log(1/delta)
-    )
-  )
-  if r != r2:
-    print (f'!!!! r mudou de {r} para {r2}')
-
-  
-
-  
-
+    # 'grafo,versao_algoritmo,rodada,tempo_execucao,qtde_nos_ant,qtde_nos_dps,grau_max_ant,grau_max_dps,r_ant,r_dps'
+    print(f'{file[7:]},{ver_alg},{i},{dif*1000},{qtde_nos_ant},{qtde_nos_dps},{grau_max_ant},{grau_max_dps},{r_ant},{r_dps}')
 
 #
 #==============================================================================
 #
 def main ():
+  print(f'grafo,versao_algoritmo,rodada,tempo_execucao,qtde_nos_ant,qtde_nos_dps,grau_max_ant,grau_max_dps,r_ant,r_dps')
   # for file in sorted (glob ("grafos/*_2_*.al")):
   # for file in sorted (glob ("grafos/ba_0_2_0.al")):
+  v1 = True
   for file in sorted (glob ("grafos/pl_grg_*.al")):
-    G = read_adjlist (file)
-    experimenta (G)
+    experimenta (v1, file)
+
+  v1 = False
+  for file in sorted (glob ("grafos/pl_grg_*.al")):
+    experimenta (v1, file)
 
 #
 #==============================================================================
